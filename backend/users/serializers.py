@@ -20,7 +20,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
-class UserSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ("id", "username", "email", "first_name", "last_name", "avatar")
+        fields = ["id", "username", "email", "birth_date", "location", "avatar", "bio"]
+        ready_only_fields = ["id", "username", "email"]
