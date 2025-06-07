@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
+from .models import Following
 
 User = get_user_model()
 
@@ -25,3 +26,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ["id", "username", "email", "birth_date", "location", "avatar", "bio"]
         ready_only_fields = ["id", "username", "email"]
+
+class FollowingSerializer(serializers.ModelSerializer):
+    follower = serializers.StringRelatedField(read_only=True)
+    followed = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Following
+        fields = ['id', 'follower', 'followed', 'created_at']
