@@ -6,10 +6,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ProfileSerializer
+from .serializers import FollowingSerializer
+from .serializers import PostSerializer
 from .models import CustomUser
 from .models import Following
+from posts.models import Post
 from rest_framework import status
-from .serializers import FollowingSerializer
+
 
 User = get_user_model()
 
@@ -77,3 +80,11 @@ class FollowingListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Following.objects.filter(follower=self.request.user)
+    
+class PostListCreateView(generics.ListCreateAPIView):
+    queryset = Post.objects.all().order_by('-created_at')
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)

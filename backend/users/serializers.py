@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
 from .models import Following
+from posts.models import Post
 
 User = get_user_model()
 
@@ -34,3 +35,15 @@ class FollowingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Following
         fields = ['id', 'follower', 'followed', 'created_at']
+
+class PostSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField(read_only=True)
+    likes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Post
+        fields = ['id', 'author', 'content', 'image', 'likes_count', 'created_at']
+        read_only_fields = ['id', 'author', 'likes_count', 'created_at']
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
