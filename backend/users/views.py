@@ -1,20 +1,21 @@
 from rest_framework import generics, permissions, status
-from rest_framework.permissions import AllowAny
-from .serializers import RegisterSerializer
-from django.contrib.auth import get_user_model
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from .serializers import ProfileSerializer
-from .serializers import FollowingSerializer
-from .serializers import PostSerializer
-from .models import CustomUser
-from .models import Following
-from posts.models import Post
-from rest_framework import status
 
+from django.contrib.auth import get_user_model
+
+from .serializers import (
+    RegisterSerializer,
+    ProfileSerializer,
+    FollowingSerializer
+)
+
+from .models import CustomUser, Following
+from posts.models import Post, Notification  # Incluímos Notification
 
 User = get_user_model()
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -28,7 +29,7 @@ class MeView(APIView):
     def get(self, request):
         serializer = ProfileSerializer(request.user)
         return Response(serializer.data)
-    
+
 
 class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
@@ -36,6 +37,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
 
 class FollowView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -53,6 +55,13 @@ class FollowView(APIView):
 
         if not created:
             return Response({'message': 'You already follow this user'}, status=status.HTTP_200_OK)
+
+        # Criar notificação de "follow"
+        Notification.objects.create(
+            recipient=to_follow,
+            sender=request.user,
+            notification_type='follow'
+        )
 
         return Response({'message': 'User followed successfully'}, status=status.HTTP_201_CREATED)
 
@@ -80,11 +89,3 @@ class FollowingListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Following.objects.filter(follower=self.request.user)
-    
-class PostListCreateView(generics.ListCreateAPIView):
-    queryset = Post.objects.all().order_by('-created_at')
-    serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
