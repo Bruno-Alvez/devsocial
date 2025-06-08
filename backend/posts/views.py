@@ -4,9 +4,10 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.exceptions import PermissionDenied
 from .models import Post
 from .models import Comment
-from .serializers import PostSerializer, CommentSerializer
+from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer
 
 
 class PostListCreateView(generics.ListCreateAPIView):
@@ -48,3 +49,14 @@ class CommentCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        if self.request.user != serializer.instance.author:
+            raise PermissionDenied("Você não tem permissão para editar este post.")
+        serializer.save()
+
