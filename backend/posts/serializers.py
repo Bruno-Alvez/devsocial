@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Comment
+from .models import Post, Comment, Notification
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(read_only=True)
@@ -37,3 +37,9 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     def get_likes_count(self, obj):
         return obj.likes.count()
+    
+class NotificationSerializer(serializers.ModelSerializer):
+    sender_username = serializers.ReadOnlyField(source='sender.username')
+    class Meta:
+        model = Notification
+        fields = ['id', 'sender', 'sender_username', 'notification_type', 'post', 'is_read', 'timestamp']
