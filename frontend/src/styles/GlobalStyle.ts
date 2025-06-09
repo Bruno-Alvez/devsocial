@@ -8,7 +8,8 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f9f9f9;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: ${({ theme }) => theme.background};
+    color: ${({ theme }) => theme.text};
   }
 `;
