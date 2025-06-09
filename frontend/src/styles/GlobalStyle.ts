@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Fira Code', monospace;
     background-color: ${({ theme }) => theme.background};
     color: ${({ theme }) => theme.text};
   }
