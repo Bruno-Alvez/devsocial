@@ -25,7 +25,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["id", "username", "email", "birth_date", "location", "avatar", "bio"]
+        fields = ["id", "username", "email", "birth_date", "location", "avatar", "bio", "is_private"]
         ready_only_fields = ["id", "username", "email"]
 
 class FollowingSerializer(serializers.ModelSerializer):

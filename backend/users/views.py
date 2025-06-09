@@ -2,17 +2,21 @@ from rest_framework import generics, permissions, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.generics import RetrieveAPIView, ListAPIView
+from rest_framework import filters
 
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 
 from .serializers import (
     RegisterSerializer,
     ProfileSerializer,
-    FollowingSerializer
+    FollowingSerializer,
+    PostSerializer
 )
 
 from .models import CustomUser, Following
-from posts.models import Post, Notification  # Incluímos Notification
+from posts.models import Post, Notification 
 
 User = get_user_model()
 
@@ -37,7 +41,15 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+class PublicProfileView(RetrieveAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.AllowAny]
 
+    def get_object(self):
+        username = self.kwargs['username']
+        user = get_object_or_404(CustomUser, username=username, is_private=False)
+        return user
 
 class FollowView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -56,7 +68,6 @@ class FollowView(APIView):
         if not created:
             return Response({'message': 'You already follow this user'}, status=status.HTTP_200_OK)
 
-        # Criar notificação de "follow"
         Notification.objects.create(
             recipient=to_follow,
             sender=request.user,
@@ -89,3 +100,20 @@ class FollowingListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Following.objects.filter(follower=self.request.user)
+    
+class PublicUserPostsView(ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        user = get_object_or_404(CustomUser, username=username, is_private=False)
+        return Post.objects.filter(author=user).order_by('-created_at')
+
+class UserSearchView(ListAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.AllowAny]
+    queryset = CustomUser.objects.filter(is_private=False)
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username']
+
