@@ -104,3 +104,11 @@ class MarkNotificationAsReadView(UpdateAPIView):
 
     def get_queryset(self):
         return Notification.objects.filter(recipient=self.request.user)
+    
+class FollowingFeedView(ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        following_users = self.request.user.following.values_list('followed', flat=True)
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')
