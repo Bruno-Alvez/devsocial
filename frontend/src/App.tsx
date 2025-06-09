@@ -1,13 +1,15 @@
-import { GlobalStyle } from './styles/GlobalStyle'
+import AppRoutes from './routes';
+import { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme';
+import { GlobalStyle } from './styles/GlobalStyle';
 
 function App() {
-
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <h1>DevSocial Frontend</h1>
-    </>
-  )
+      <AppRoutes />
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;
