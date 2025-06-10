@@ -110,5 +110,8 @@ class FollowingFeedView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        following_users = self.request.user.following.values_list('followed', flat=True)
-        return Post.objects.filter(author__in=following_users).order_by('-created_at')
+        user = self.request.user
+        following_users = user.following.values_list('followed', flat=True)
+        return Post.objects.filter(
+            author__in=list(following_users) + [user.id]
+        ).order_by('-created_at')

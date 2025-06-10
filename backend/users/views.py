@@ -14,7 +14,7 @@ from .serializers import (
     ProfileSerializer,
     FollowingSerializer,
     PostSerializer,
-    EmailTokenObtainPairSerializer
+    MyTokenObtainPairSerializer
 )
 
 from .models import CustomUser, Following
@@ -120,6 +120,6 @@ class UserSearchView(ListAPIView):
     search_fields = ['username']
 
 class EmailLoginView(TokenObtainPairView):
-    serializer_class = EmailTokenObtainPairSerializer
+    serializer_class = MyTokenObtainPairSerializer
 
 
