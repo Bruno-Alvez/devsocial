@@ -8,9 +8,10 @@ import {
   InputIcon,
   Button,
   ErrorMessage,
+  SuccessMessage,
 } from './styles';
 
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -19,6 +20,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -34,21 +36,31 @@ export default function Login() {
       });
 
       const data = await response.json();
+      console.log('Resposta da API:', data);
 
       if (!response.ok) {
         throw new Error(data.detail || 'Credenciais inválidas');
       }
 
-      login(data.token, data.user);
+      login(data.access, data.user);
       navigate('/');
     } catch {
       setError('Falha no login. Verifique suas credenciais.');
     }
   };
 
+  useEffect(() => {
+  const registered = localStorage.getItem('registerSuccess');
+  if (registered) {
+    setSuccessMessage('Cadastro realizado com sucesso. Faça o login para continuar.');
+    localStorage.removeItem('registerSuccess');
+  }
+  }, []);
+
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
+        {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
         <Logo>{'</> devSocial'}</Logo>
         <Title>Bem vindo de volta</Title>
 
