@@ -95,14 +95,3 @@ export const ErrorMessage = styled.p`
   margin-top: 0.8rem;
 `;
 
-
-export const SuccessMessage = styled.p`
-  background-color: rgba(63, 185, 80, 0.1);
-  color: #3fb950;
-  padding: 0.75rem 1rem;
-  border: 1px solid #238636;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-`;
