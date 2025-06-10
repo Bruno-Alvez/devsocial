@@ -29,12 +29,34 @@ import {
   FiLogOut,
 } from 'react-icons/fi';
 
-import  Footer  from '../../components/Footer';
-
+import { useEffect, useState } from 'react';
+import Footer from '../../components/Footer';
 import { useAuth } from '../../contexts/AuthContext';
+import { fetchUserFeed } from '../../api/posts';
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadFeed = async () => {
+      try {
+        const data = await fetchUserFeed(token);
+        setPosts(data);
+      } catch (err: any) {
+        console.error('Failed to load feed:', err);
+        // Optional: handle expired session or unauthorized
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (token) {
+      loadFeed();
+    }
+  }, [token]);
+
   return (
     <Container>
       <Sidebar>
@@ -44,7 +66,7 @@ export default function HomePage() {
           <SidebarAvatar src={user?.profile_picture || '/default-avatar.png'} alt="User" />
           <span>@{user?.username}</span>
         </SidebarUser>
-        
+
         <NavItem><FiHome /> Início</NavItem>
         <NavItem><FiUser /> Perfil</NavItem>
         <NavItem><FiFileText /> Meus Posts</NavItem>
@@ -55,46 +77,38 @@ export default function HomePage() {
       <FeedWrapper>
         <Feed>
           <FeedHeader>
-          <PostBox>
-            <UserAvatar src={user?.profile_picture || '/default-avatar.png'} alt="User" />
-            <PlaceholderText placeholder="No que você está pensando?" />
-            <PostButton>Postar</PostButton>
-          </PostBox>
-        </FeedHeader>
-          <PostCard>
-            <Avatar src="https://i.pravatar.cc/100?img=1" alt="avatar" />
-            <Content>
-              <Username>bruno_dev</Username>
-              <Timestamp>Há 2 horas</Timestamp>
-              <PostText>
-                Acabei de terminar minha primeira API com Django + DRF! 💪🔥
-              </PostText>
-            </Content>
-          </PostCard>
+            <PostBox>
+              <UserAvatar src={user?.profile_picture || '/default-avatar.png'} alt="User" />
+              <PlaceholderText placeholder="No que você está pensando?" />
+              <PostButton>Postar</PostButton>
+            </PostBox>
+          </FeedHeader>
 
-          <PostCard>
-            <Avatar src="https://i.pravatar.cc/100?img=2" alt="avatar" />
-            <Content>
-              <Username>lucas.js</Username>
-              <Timestamp>Ontem</Timestamp>
-              <PostText>
-                Refatorei todo o front-end usando styled-components e fiquei impressionado com o resultado! 🚀
-              </PostText>
-            </Content>
-          </PostCard>
-
-          <PostCard>
-            <Avatar src="https://i.pravatar.cc/100?img=3" alt="avatar" />
-            <Content>
-              <Username>maria.go</Username>
-              <Timestamp>Há 3 dias</Timestamp>
-              <PostText>
-                Iniciando meu aprendizado em Go para microservices — alguma dica de projeto prático?
-              </PostText>
-            </Content>
-          </PostCard>
+          {loading ? (
+            <PostText>Carregando...</PostText>
+          ) : posts.length === 0 ? (
+            <PostText> Você ainda não tem nenhuma postagem no feed. Siga alguém para ver o que ela está pensando.</PostText>
+          ) : (
+            posts.map((post: any) => (
+              <PostCard key={post.id}>
+                <Avatar src={post.author.profile_picture || '/default-avatar.png'} />
+                <Content>
+                  <Username>@{post.author.username}</Username>
+                  <Timestamp>
+                    {new Date(post.created_at).toLocaleString('pt-BR', {
+                      day: '2-digit',
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </Timestamp>
+                  <PostText>{post.content}</PostText>
+                </Content>
+              </PostCard>
+            ))
+          )}
         </Feed>
-        <Footer/>
+        <Footer />
       </FeedWrapper>
     </Container>
   );

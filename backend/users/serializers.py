@@ -77,3 +77,31 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token["username"] = user.username
         return token
+    
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username_field = CustomUser.EMAIL_FIELD  # <- garante uso do email
+
+    def validate(self, attrs):
+        credentials = {
+            'email': attrs.get("email"),
+            'password': attrs.get("password")
+        }
+
+        user = authenticate(**credentials)
+
+        if user is None:
+            raise serializers.ValidationError("Invalid email or password.")
+
+        refresh = self.get_token(user)
+
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'profile_picture': user.profile_picture.url if user.profile_picture else None
+            }
+        }
+
