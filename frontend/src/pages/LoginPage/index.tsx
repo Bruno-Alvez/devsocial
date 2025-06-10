@@ -15,6 +15,7 @@ import { useState, useEffect} from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import Footer from '../../components/Footer';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -97,6 +98,7 @@ export default function Login() {
         </p>
 
       </Form>
+      <Footer />
     </Container>
   );
 }
