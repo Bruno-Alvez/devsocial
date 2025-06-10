@@ -34,12 +34,13 @@ export default function Login() {
       });
 
       const data = await response.json();
+      console.log('Resposta da API:', data);
 
       if (!response.ok) {
         throw new Error(data.detail || 'Credenciais inválidas');
       }
 
-      login(data.token, data.user);
+      login(data.access, data.user);
       navigate('/');
     } catch {
       setError('Falha no login. Verifique suas credenciais.');
