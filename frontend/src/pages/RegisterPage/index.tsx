@@ -13,6 +13,7 @@ import {
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../../components/Footer';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -41,7 +42,7 @@ export default function Register() {
 
       localStorage.setItem('registerSuccess', 'true');
       navigate('/login');
-      
+
     } catch {
       setError('Erro no registro. Verifique os dados e tente novamente.');
     }
@@ -109,6 +110,7 @@ export default function Register() {
 
 
       </Form>
+      <Footer />
     </Container>
   );
 }
