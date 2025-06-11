@@ -41,7 +41,7 @@ export default function HomePage() {
   useEffect(() => {
     const loadFeed = async () => {
       try {
-        const data = await fetchUserFeed(token);
+        const data = await fetchUserFeed(token as string);
         setPosts(data);
       } catch (err: any) {
         console.error('Failed to load feed:', err);
@@ -92,11 +92,11 @@ export default function HomePage() {
           <span>@{user?.username}</span>
         </SidebarUser>
 
-        <NavItem><FiHome /> Início</NavItem>
-        <NavItem><FiUser /> Perfil</NavItem>
+        <NavItem as={Link} to="/"><FiHome /> Início</NavItem>
+        <NavItem as={Link} to="/profile"><FiUser /> Perfil</NavItem>
         <NavItem as={Link} to="/my-posts"><FiFileText />Publicações</NavItem>
-        <NavItem><FiBell /> Notificações</NavItem>
-        <NavItem><FiLogOut /> Sair</NavItem>
+        <NavItem as={Link} to="#"><FiBell /> Notificações</NavItem>
+        <NavItem as={Link} to="/login"><FiLogOut /> Sair</NavItem>
       </Sidebar>
 
       <FeedWrapper>
