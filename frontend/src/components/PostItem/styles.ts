@@ -40,7 +40,7 @@ export const PostText = styled.p`
 `;
 
 export const PostImage = styled.img`
-  width: 80%;
+  width: 50%;
   height: auto;
   margin-top: 0.75rem;
   border-radius: 10px;
