@@ -1,6 +1,5 @@
-// frontend/src/pages/HomePage/styles.ts
-
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const Container = styled.div`
   display: flex;
@@ -31,6 +30,46 @@ export const Divider = styled.hr`
   margin: 1rem 0;
 `;
 
+export const SidebarUser = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  span {
+    margin-left: 0.8rem;
+    font-weight: bold;
+    color: #e6edf3;
+  }
+`;
+
+export const SidebarAvatar = styled.img`
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+`;
+
+export const NavItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: #c9d1d9;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  text-decoration: none;
+
+  svg {
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    background-color: #21262d;
+  }
+`;
+
 export const FeedWrapper = styled.div`
   flex: 1;
   display: flex;
@@ -44,6 +83,29 @@ export const Feed = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+`;
+
+export const FeedHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const CreateButton = styled(Link)`
+  background-color: #2f81f7;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #1f6feb;
+  }
 `;
 
 export const PostCard = styled.div`
@@ -85,91 +147,18 @@ export const PostText = styled.p`
   color: #e6edf3;
 `;
 
-export const NavItem = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  color: #c9d1d9;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: background-color 0.2s;
-  text-decoration: none;
-
-  svg {
-    margin-right: 0.75rem;
-    font-size: 1.2rem;
-  }
-
-  &:hover {
-    background-color: #21262d;
-  }
-`
-export const SidebarUser = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 2rem;
-
-  span {
-    margin-left: 0.8rem;
-    font-weight: bold;
-    color: #e6edf3;
-  }
-`;
-
-export const SidebarAvatar = styled.img`
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  object-fit: cover;
-`;
-
-export const FeedHeader = styled.div`
-  margin-bottom: 2rem;
-`;
-
-export const PostBox = styled.div`
-  background-color: #161b22;
-  padding: 1rem;
-  border: 1px solid #30363d;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-`;
-
-export const UserAvatar = styled.img`
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  margin-right: 1rem;
-`;
-
-export const PlaceholderText = styled.input`
-  flex: 1;
-  padding: 0.7rem;
+export const DeleteButton = styled.button`
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
   border-radius: 8px;
-  border: none;
-  background-color: #0d1117;
-  color: #e6edf3;
-
-  &:focus {
-    outline: none;
-    background-color: #0d1117;
-    border: 1px solid #2f81f7;
-  }
-`;
-
-export const PostButton = styled.button`
-  margin-left: 1rem;
-  background-color: #2f81f7;
-  border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-  color: #fff;
-  font-weight: bold;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
   cursor: pointer;
 
   &:hover {
-    background-color: #1f6feb;
+    background-color: #ef444420;
   }
 `;

@@ -5,12 +5,6 @@ import {
   Divider,
   FeedWrapper,
   Feed,
-  PostCard,
-  Avatar,
-  Content,
-  Username,
-  Timestamp,
-  PostText,
   NavItem,
   SidebarUser,
   SidebarAvatar,
@@ -19,6 +13,7 @@ import {
   UserAvatar,
   PlaceholderText,
   PostButton,
+  PostText
 } from './styles';
 
 import {
@@ -33,11 +28,15 @@ import { useEffect, useState } from 'react';
 import Footer from '../../components/Footer';
 import { useAuth } from '../../contexts/AuthContext';
 import { fetchUserFeed } from '../../api/posts';
+import { Link } from 'react-router-dom';
+import PostItem from '../../components/PostItem';
 
 export default function HomePage() {
   const { user, token } = useAuth();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [newPostContent, setNewPostContent] = useState('');
+  const [newPostImage, setNewPostImage] = useState<File | null>(null);
 
   useEffect(() => {
     const loadFeed = async () => {
@@ -46,7 +45,6 @@ export default function HomePage() {
         setPosts(data);
       } catch (err: any) {
         console.error('Failed to load feed:', err);
-        // Optional: handle expired session or unauthorized
       } finally {
         setLoading(false);
       }
@@ -57,19 +55,46 @@ export default function HomePage() {
     }
   }, [token]);
 
+  const handleCreatePost = async () => {
+    if (!newPostContent.trim() && !newPostImage) return;
+
+    const formData = new FormData();
+    formData.append('content', newPostContent);
+    if (newPostImage) formData.append('image', newPostImage);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/posts/', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Erro ao criar post');
+
+      const createdPost = await response.json();
+      setPosts([createdPost, ...posts]);
+      setNewPostContent('');
+      setNewPostImage(null);
+    } catch (err) {
+      console.error('Erro ao postar:', err);
+    }
+  };
+
   return (
     <Container>
       <Sidebar>
         <Header>{'</> devSocial'}</Header>
         <Divider />
         <SidebarUser>
-          <SidebarAvatar src={user?.profile_picture || '/default-avatar.png'} alt="User" />
+          <SidebarAvatar src={user?.profile_picture || '/profile-user.png'} alt="User" />
           <span>@{user?.username}</span>
         </SidebarUser>
 
         <NavItem><FiHome /> Início</NavItem>
         <NavItem><FiUser /> Perfil</NavItem>
-        <NavItem><FiFileText /> Meus Posts</NavItem>
+        <NavItem as={Link} to="/my-posts"><FiFileText />Publicações</NavItem>
         <NavItem><FiBell /> Notificações</NavItem>
         <NavItem><FiLogOut /> Sair</NavItem>
       </Sidebar>
@@ -78,33 +103,31 @@ export default function HomePage() {
         <Feed>
           <FeedHeader>
             <PostBox>
-              <UserAvatar src={user?.profile_picture || '/default-avatar.png'} alt="User" />
-              <PlaceholderText placeholder="No que você está pensando?" />
-              <PostButton>Postar</PostButton>
+              <UserAvatar src={user?.profile_picture || '/profile-user.png'} alt="User" />
+              <PlaceholderText
+                placeholder="No que você está pensando?"
+                value={newPostContent}
+                onChange={(e) => setNewPostContent(e.target.value)}
+              />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setNewPostImage(e.target.files?.[0] || null)}
+                style={{ display: 'none' }}
+                id="upload-img"
+              />
+              <label htmlFor="upload-img" style={{ marginLeft: '0.5rem', cursor: 'pointer', color: '#2f81f7' }}>📎</label>
+              <PostButton onClick={handleCreatePost}>Postar</PostButton>
             </PostBox>
           </FeedHeader>
 
           {loading ? (
             <PostText>Carregando...</PostText>
           ) : posts.length === 0 ? (
-            <PostText> Você ainda não tem nenhuma postagem no feed. Siga alguém para ver o que ela está pensando.</PostText>
+            <PostText>Você ainda não tem nenhuma postagem no feed. Siga alguém para ver o que ela está pensando.</PostText>
           ) : (
             posts.map((post: any) => (
-              <PostCard key={post.id}>
-                <Avatar src={post.author.profile_picture || '/default-avatar.png'} />
-                <Content>
-                  <Username>@{post.author.username}</Username>
-                  <Timestamp>
-                    {new Date(post.created_at).toLocaleString('pt-BR', {
-                      day: '2-digit',
-                      month: 'short',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </Timestamp>
-                  <PostText>{post.content}</PostText>
-                </Content>
-              </PostCard>
+              <PostItem key={post.id} post={post} />
             ))
           )}
         </Feed>
