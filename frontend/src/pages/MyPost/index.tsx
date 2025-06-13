@@ -1,11 +1,5 @@
 import {
   Container,
-  Sidebar,
-  Header,
-  Divider,
-  SidebarUser,
-  SidebarAvatar,
-  NavItem,
   FeedWrapper,
   Feed,
   PostText,
@@ -14,11 +8,6 @@ import {
 } from './styles';
 
 import {
-  FiHome,
-  FiUser,
-  FiFileText,
-  FiBell,
-  FiLogOut,
   FiPlus,
 } from 'react-icons/fi';
 
@@ -27,9 +16,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PostItem from '../../components/PostItem';
 import Footer from '../../components/Footer';
+import Sidebar from '../../components/Sidebar';
 
 export default function MyPosts() {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const [myPosts, setMyPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -76,21 +66,7 @@ export default function MyPosts() {
 
   return (
     <Container>
-      <Sidebar>
-        <Header>{'</> devSocial'}</Header>
-        <Divider />
-        <SidebarUser>
-          <SidebarAvatar src={user?.profile_picture || '/profile-user.png'} alt="User" />
-          <span>@{user?.username}</span>
-        </SidebarUser>
-
-        <NavItem as={Link} to="/"><FiHome /> Início</NavItem>
-        <NavItem as={Link} to="/profile"><FiUser /> Perfil</NavItem>
-        <NavItem as={Link} to="/my-posts"><FiFileText /> Publicações</NavItem>
-        <NavItem as={Link} to="/notifications"><FiBell /> Notificações</NavItem>
-        <NavItem><FiLogOut /> Sair</NavItem>
-      </Sidebar>
-
+      <Sidebar/>
       <FeedWrapper>
         <Feed>
           <FeedHeader>

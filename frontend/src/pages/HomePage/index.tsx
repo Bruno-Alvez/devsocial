@@ -1,35 +1,28 @@
 import {
   Container,
-  Sidebar,
-  Header,
-  Divider,
   FeedWrapper,
   Feed,
-  NavItem,
-  SidebarUser,
-  SidebarAvatar,
   FeedHeader,
   PostBox,
   UserAvatar,
   PlaceholderText,
   PostButton,
-  PostText
+  PostText,
+  SearchInput,
+  SearchResult,
+  SearchAvatar,
+  SearchUsername
 } from './styles';
 
-import {
-  FiHome,
-  FiUser,
-  FiFileText,
-  FiBell,
-  FiLogOut,
-} from 'react-icons/fi';
 
 import { useEffect, useState } from 'react';
 import Footer from '../../components/Footer';
 import { useAuth } from '../../contexts/AuthContext';
 import { fetchUserFeed } from '../../api/posts';
-import { Link } from 'react-router-dom';
 import PostItem from '../../components/PostItem';
+import Sidebar from '../../components/Sidebar';
+import UserSuggestions from '../../components/UserSuggestions';
+import { getAvatarUrl } from '../../utils/avatarUtils';
 
 export default function HomePage() {
   const { user, token } = useAuth();
@@ -37,6 +30,9 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [newPostContent, setNewPostContent] = useState('');
   const [newPostImage, setNewPostImage] = useState<File | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+
 
   useEffect(() => {
     const loadFeed = async () => {
@@ -55,6 +51,23 @@ export default function HomePage() {
     }
   }, [token]);
 
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (searchQuery.trim().length >= 2) {
+        fetch(`${import.meta.env.VITE_API_URL}/users/search/?search=${searchQuery}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(setSearchResults)
+          .catch(console.error);
+      } else {
+        setSearchResults([]);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery, token]);
+
   const handleCreatePost = async () => {
     if (!newPostContent.trim() && !newPostImage) return;
 
@@ -63,7 +76,7 @@ export default function HomePage() {
     if (newPostImage) formData.append('image', newPostImage);
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/posts/', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -84,26 +97,29 @@ export default function HomePage() {
 
   return (
     <Container>
-      <Sidebar>
-        <Header>{'</> devSocial'}</Header>
-        <Divider />
-        <SidebarUser>
-          <SidebarAvatar src={user?.profile_picture || '/profile-user.png'} alt="User" />
-          <span>@{user?.username}</span>
-        </SidebarUser>
-
-        <NavItem as={Link} to="/"><FiHome /> Início</NavItem>
-        <NavItem as={Link} to="/profile"><FiUser /> Perfil</NavItem>
-        <NavItem as={Link} to="/my-posts"><FiFileText />Publicações</NavItem>
-        <NavItem as={Link} to="#"><FiBell /> Notificações</NavItem>
-        <NavItem as={Link} to="/login"><FiLogOut /> Sair</NavItem>
-      </Sidebar>
-
+      <Sidebar/>
       <FeedWrapper>
         <Feed>
+          <SearchInput
+            type="text"
+            placeholder="Digite o nome de alguém e veja se ele está no Devsocial..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchResults.length > 0 && (
+            <div>
+              {searchResults.map(user => (
+                <SearchResult key={user.id} to={`/users/${user.username}`}>
+                  <SearchAvatar src={getAvatarUrl(user.avatar) || '/profile-user.png'} alt={user.username} />
+                  <SearchUsername>@ {user.username}</SearchUsername>
+                </SearchResult>
+              ))}
+            </div>
+          )}
+
           <FeedHeader>
             <PostBox>
-              <UserAvatar src={user?.profile_picture || '/profile-user.png'} alt="User" />
+              <UserAvatar src={getAvatarUrl(user?.avatar)} alt="User" />
               <PlaceholderText
                 placeholder="No que você está pensando?"
                 value={newPostContent}
@@ -120,6 +136,8 @@ export default function HomePage() {
               <PostButton onClick={handleCreatePost}>Postar</PostButton>
             </PostBox>
           </FeedHeader>
+
+          <UserSuggestions />
 
           {loading ? (
             <PostText>Carregando...</PostText>

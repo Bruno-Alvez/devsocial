@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.password_validation import validate_password
+from rest_framework.response import Response
 from .models import CustomUser
 from .models import Following
 from posts.models import Post
@@ -38,48 +41,25 @@ class FollowingSerializer(serializers.ModelSerializer):
         fields = ['id', 'follower', 'followed', 'created_at']
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(read_only=True)
+    author = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ['id', 'author', 'content', 'image', 'likes_count', 'created_at']
-        read_only_fields = ['id', 'author', 'likes_count', 'created_at']
+
+    def get_author(self, obj):
+        return {
+            'username': obj.author.username,
+            'avatar': obj.author.avatar.url if obj.author.avatar else None
+        }
+
 
     def get_likes_count(self, obj):
         return obj.likes.count()
-
-class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = CustomUser.EMAIL_FIELD
-
-    def validate(self, attrs):
-        email = attrs.get("email")
-        password = attrs.get("password")
-
-        user = authenticate(request=self.context.get('request'), email=email, password=password)
-
-        if not user:
-            raise serializers.ValidationError("Credenciais inválidas")
-
-        refresh = self.get_token(user)
-        return {
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-            },
-        }
-
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token["username"] = user.username
-        return token
     
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = CustomUser.EMAIL_FIELD  # <- garante uso do email
+    username_field = CustomUser.EMAIL_FIELD
 
     def validate(self, attrs):
         credentials = {
@@ -90,7 +70,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         user = authenticate(**credentials)
 
         if user is None:
-            raise serializers.ValidationError("Invalid email or password.")
+            raise serializers.ValidationError("Credenciais incorretas!.")
 
         refresh = self.get_token(user)
 
@@ -101,7 +81,16 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'profile_picture': user.profile_picture.url if user.profile_picture else None
+                'avatar': user.avatar.url if user.avatar else None
             }
         }
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'avatar']
+
+class UserSuggestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'avatar']
