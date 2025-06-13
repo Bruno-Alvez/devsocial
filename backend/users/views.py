@@ -5,7 +5,10 @@ from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveAPIView, ListAPIView
+from rest_framework.filters import SearchFilter
 from rest_framework import filters
+from rest_framework import serializers
+
 
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -15,7 +18,9 @@ from .serializers import (
     ProfileSerializer,
     FollowingSerializer,
     PostSerializer,
-    MyTokenObtainPairSerializer
+    MyTokenObtainPairSerializer,
+    UserSerializer,
+    UserSuggestionSerializer
 )
 
 from .models import CustomUser, Following
@@ -123,5 +128,23 @@ class UserSearchView(ListAPIView):
 
 class EmailLoginView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+class UserSearchView(ListAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter]
+    search_fields = ['username']
+
+
+class UserSuggestionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        following_ids = user.following.values_list('followed_id', flat=True)
+        suggestions = CustomUser.objects.exclude(id__in=following_ids).exclude(id=user.id)[:10]
+        serializer = UserSuggestionSerializer(suggestions, many=True)
+        return Response(serializer.data)
 
 

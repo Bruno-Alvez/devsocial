@@ -1,11 +1,6 @@
 import {
   Container,
   Sidebar,
-  Header,
-  Divider,
-  SidebarUser,
-  SidebarAvatar,
-  NavItem,
   FeedWrapper,
   Feed,
   FeedHeader,
@@ -18,20 +13,12 @@ import {
   UploadLabel,
 } from './styles';
 
-import {
-  FiHome,
-  FiUser,
-  FiFileText,
-  FiBell,
-  FiLogOut,
-} from 'react-icons/fi';
-
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreatePost() {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const [content, setContent] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const navigate = useNavigate();
@@ -72,21 +59,7 @@ export default function CreatePost() {
 
   return (
     <Container>
-      <Sidebar>
-        <Header>{'</> devSocial'}</Header>
-        <Divider />
-        <SidebarUser>
-          <SidebarAvatar src={user?.profile_picture || '/profile-user.png'} alt="User" />
-          <span>@{user?.username}</span>
-        </SidebarUser>
-
-        <NavItem as={Link} to="/"><FiHome /> Início</NavItem>
-        <NavItem as={Link} to="/profile"><FiUser /> Perfil</NavItem>
-        <NavItem as={Link} to="/my-posts"><FiFileText /> Publicações</NavItem>
-        <NavItem as={Link} to="/notifications"><FiBell /> Notificações</NavItem>
-        <NavItem><FiLogOut /> Sair</NavItem>
-      </Sidebar>
-
+      <Sidebar />
       <FeedWrapper>
         <Feed>
           <FeedHeader>

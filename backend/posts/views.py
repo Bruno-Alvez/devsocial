@@ -9,12 +9,13 @@ from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer
 
 
 class PostListCreateView(generics.ListCreateAPIView):
-    queryset = Post.objects.all().order_by('-created_at')
+    queryset = Post.objects.select_related('author').all().order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
 
 
 class LikePostView(APIView):
@@ -75,7 +76,7 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         if self.request.user != serializer.instance.author:
-            raise PermissionDenied("You do not have permission to edit this post.")
+            raise PermissionDenied("Você não tem permissão pra editar esse publicação!")
         serializer.save()
 
 
@@ -86,7 +87,7 @@ class PostDeleteView(generics.DestroyAPIView):
     def delete(self, request, *args, **kwargs):
         post = self.get_object()
         if post.author != request.user:
-            return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'detail': 'Permissão Negada'}, status=status.HTTP_403_FORBIDDEN)
         return super().delete(request, *args, **kwargs)
 
 

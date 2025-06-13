@@ -1,11 +1,5 @@
 import {
   Container,
-  Sidebar,
-  Header,
-  Divider,
-  SidebarUser,
-  SidebarAvatar,
-  NavItem,
   FeedWrapper,
   Feed,
   FeedHeader,
@@ -19,34 +13,38 @@ import {
   UploadInput,
   SuccessMessage,
   BottomActions,
-  ActionButton
+  ActionButton,
+  ProfileColumn,
+  DividerVertical
 } from './styles';
 
 import {
-  FiHome, FiUser, FiFileText, FiBell, FiLogOut,
-  FiEdit, FiCheck, FiTrash2
+  FiEdit, FiCheck, FiTrash2, FiX
 } from 'react-icons/fi';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Footer from '../../components/Footer';
+import Sidebar from '../../components/Sidebar';
 
 interface ProfileData {
+  id?: number;
   username: string;
   email: string;
   bio?: string;
   location?: string;
   birth_date?: string;
-  avatar?: string;
+  avatar?: string | null;
 }
 
 export default function ProfilePage() {
-  const { token, logout } = useAuth();
+  const { token, logout, user, updateUser } = useAuth();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,6 +64,8 @@ export default function ProfilePage() {
       })
       .catch(console.error);
   }, [token]);
+
+  const isOwnProfile = profile?.username === user?.username;
 
   const handleSaveField = async (field: string, value: string) => {
     if (!token || !profile) return;
@@ -126,11 +126,46 @@ export default function ProfilePage() {
       });
       if (!res.ok) throw new Error();
       const updated = await res.json();
+      updateUser({ avatar: updated.avatar });
+
       setProfile({ ...profile, ...updated });
       setSuccessMessage('Foto de perfil atualizada com sucesso!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch {
       console.error('Falha ao atualizar avatar');
+    }
+  };
+
+  const handleAvatarPreview = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setAvatarFile(file);
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setPreviewAvatar(previewUrl);
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/profile/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ avatar: null }),
+      });
+      if (!res.ok) throw new Error();
+      const updated = await res.json();
+      updateUser({ avatar: null });
+      setProfile({ ...profile, avatar: null } as ProfileData);
+      setPreviewAvatar(null);
+      setAvatarFile(null);
+      setSuccessMessage('Foto de perfil removida com sucesso!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch {
+      console.error('Erro ao remover avatar');
     }
   };
 
@@ -160,47 +195,59 @@ export default function ProfilePage() {
   const renderField = (label: string, field: keyof ProfileData) => (
     <div>
       <InfoLabel>{label}</InfoLabel>
-      {editingField === field ? (
+      {isOwnProfile && editingField === field ? (
         <>
           <InputField
             value={profile[field] || ''}
             onChange={e => setProfile({ ...profile, [field]: e.target.value })}
           />
-          <EditButton onClick={() => handleSaveField(field, profile[field] || '')}>
+          <EditButton onClick={() => handleSaveField(field, String(profile[field] ?? ''))}>
             <FiCheck /> Salvar
           </EditButton>
         </>
       ) : (
         <>
           <InfoValue>{profile[field] || '-'}</InfoValue>
-          <EditButton onClick={() => setEditingField(field)}>
-            <FiEdit /> Editar
-          </EditButton>
+          {isOwnProfile && (
+            <EditButton onClick={() => setEditingField(field)}>
+              <FiEdit /> Editar
+            </EditButton>
+          )}
         </>
       )}
     </div>
   );
 
+  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:8000';
+  const avatarPreviewSrc = previewAvatar || (profile.avatar ? (profile.avatar.startsWith('http') ? profile.avatar : `${apiBase}${profile.avatar}`) : '/profile-user.png');
+
   return (
     <Container>
-      <Sidebar>
-        <Header>{'</> devSocial'}</Header>
-        <Divider />
-        <SidebarUser>
-          <SidebarAvatar src={profile.avatar || '/profile-user.png'} alt="Avatar" />
-          <span>@{profile.username}</span>
-        </SidebarUser>
-        <NavItem as={Link} to="/"><FiHome /> Início</NavItem>
-        <NavItem as={Link} to="/profile"><FiUser /> Perfil</NavItem>
-        <NavItem as={Link} to="/my-posts"><FiFileText /> Publicações</NavItem>
-        <NavItem as={Link} to="#"><FiBell /> Notificações</NavItem>
-        <NavItem as={Link} to="/login"><FiLogOut /> Sair</NavItem>
-      </Sidebar>
-
+      <Sidebar />
       <FeedWrapper>
         <Feed>
           <FeedHeader>
-            <ProfileAvatar src={profile.avatar || '/profile-user.png'} alt="Avatar" />
+            <ProfileColumn>
+              <ProfileAvatar src={avatarPreviewSrc} alt="Avatar" />
+              {isOwnProfile && (
+                <>
+                  <UploadInput
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarPreview}
+                  />
+                  <EditButton onClick={handleAvatarUpload}>
+                    <FiCheck /> Atualizar foto de perfil
+                  </EditButton>
+                  <EditButton onClick={handleRemoveAvatar}>
+                    <FiX /> Remover foto
+                  </EditButton>
+                </>
+              )}
+            </ProfileColumn>
+
+            <DividerVertical />
+
             <ProfileInfo>
               <Username>@{profile.username}</Username>
               {renderField('Bio: (Conte-nos sobre você)', 'bio')}
@@ -209,21 +256,19 @@ export default function ProfilePage() {
               {renderField('Nascimento: Ex: (DD/MM/AAAA)', 'birth_date')}
             </ProfileInfo>
           </FeedHeader>
-          <UploadInput type="file" accept="image/*" onChange={e => setAvatarFile(e.target.files?.[0] || null)} />
-          <EditButton onClick={handleAvatarUpload}>
-            <FiCheck /> Atualizar foto de perfil
-          </EditButton>
 
           {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
 
-          <BottomActions>
-            <ActionButton primary onClick={handleSaveAll}>
-              <FiCheck /> Salvar perfil
-            </ActionButton>
-            <ActionButton danger onClick={handleDeleteAccount}>
-              <FiTrash2 /> Excluir conta
-            </ActionButton>
-          </BottomActions>
+          {isOwnProfile && (
+            <BottomActions>
+              <ActionButton primary onClick={handleSaveAll}>
+                <FiCheck /> Salvar perfil
+              </ActionButton>
+              <ActionButton danger onClick={handleDeleteAccount}>
+                <FiTrash2 /> Excluir conta
+              </ActionButton>
+            </BottomActions>
+          )}
         </Feed>
         <Footer />
       </FeedWrapper>

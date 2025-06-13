@@ -87,22 +87,39 @@ export const Feed = styled.div`
 
 export const FeedHeader = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: 3rem;
   align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+`;
+
+export const ProfileColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
 `;
 
 export const ProfileAvatar = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #2f81f7;
+`;
+
+export const DividerVertical = styled.div`
+  width: 1px;
+  height: auto;
+  background-color: #30363d;
 `;
 
 export const ProfileInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  flex: 1;
 `;
 
 export const Username = styled.h2`
@@ -152,7 +169,7 @@ export const EditButton = styled.button`
 `;
 
 export const UploadInput = styled.input`
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   background-color: #161b22;
   color: #e6edf3;
   border: none;
@@ -176,13 +193,15 @@ export const SuccessMessage = styled.p`
   color: #3fb950;
   font-size: 0.9rem;
   margin-top: 1rem;
+  text-align: center;
 `;
 
 export const BottomActions = styled.div`
   margin-top: 2rem;
   margin-bottom: 3rem;
+  margin-right: 9.4rem;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 1rem;
 `;
 

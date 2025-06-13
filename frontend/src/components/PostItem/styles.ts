@@ -62,3 +62,28 @@ export const DeleteButton = styled.button`
     background-color: #ef444420;
   }
 `;
+
+export const LikeButton = styled.button`
+  background-color: transparent;
+  color: #2f81f7;
+  border: 1px solid #2f81f7;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  &:hover {
+    background-color: #2f81f710;
+  }
+`;
+
+export const LikesCount = styled.p`
+  font-size: 0.85rem;
+  color: #8b949e;
+  margin-top: 0.5rem;
+`;
