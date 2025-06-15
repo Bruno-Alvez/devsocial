@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'users',
     'posts',
     'corsheaders',
+    'notifications'
 ]
 
 # Custom user model

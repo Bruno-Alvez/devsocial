@@ -3,19 +3,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
-from rest_framework.exceptions import PermissionDenied
-from .models import Post, Comment, Notification
+from rest_framework.exceptions import PermissionDenied, NotFound
+from .models import Post, Comment, LegacyNotification
 from .serializers import PostSerializer, CommentSerializer, PostDetailSerializer, NotificationSerializer
 
 
 class PostListCreateView(generics.ListCreateAPIView):
-    queryset = Post.objects.select_related('author').all().order_by('-created_at')
+    queryset = Post.objects.select_related('author').prefetch_related('comments').all().order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
 
 
 class LikePostView(APIView):
@@ -34,7 +33,7 @@ class LikePostView(APIView):
         else:
             post.likes.add(user)
             if post.author != user:
-                Notification.objects.create(
+                LegacyNotification.objects.create(
                     recipient=post.author,
                     sender=user,
                     notification_type='like',
@@ -52,20 +51,24 @@ class MyPostsView(ListAPIView):
 
 
 class CommentCreateView(CreateAPIView):
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        comment = serializer.save(author=self.request.user)
-        post_author = comment.post.author
+        post_id = self.kwargs.get('post_id')
+        try:
+            post = Post.objects.get(id=post_id)
+        except Post.DoesNotExist:
+            raise NotFound("Post not found.")
 
-        if post_author != self.request.user:
-            Notification.objects.create(
-                recipient=post_author,
+        comment = serializer.save(author=self.request.user, post=post)
+
+        if post.author != self.request.user:
+            LegacyNotification.objects.create(
+                recipient=post.author,
                 sender=self.request.user,
                 notification_type='comment',
-                post=comment.post
+                post=post
             )
 
 
@@ -76,7 +79,7 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         if self.request.user != serializer.instance.author:
-            raise PermissionDenied("Você não tem permissão pra editar esse publicação!")
+            raise PermissionDenied("Você não tem permissão pra editar essa publicação!")
         serializer.save()
 
 
@@ -96,7 +99,7 @@ class NotificationListView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Notification.objects.filter(recipient=self.request.user).order_by('-timestamp')
+        return LegacyNotification.objects.filter(recipient=self.request.user).order_by('-timestamp')
 
 
 class MarkNotificationAsReadView(UpdateAPIView):
@@ -104,8 +107,9 @@ class MarkNotificationAsReadView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Notification.objects.filter(recipient=self.request.user)
-    
+        return LegacyNotification.objects.filter(recipient=self.request.user)
+
+
 class FollowingFeedView(ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
@@ -116,3 +120,12 @@ class FollowingFeedView(ListAPIView):
         return Post.objects.filter(
             author__in=list(following_users) + [user.id]
         ).order_by('-created_at')
+
+
+class PostCommentsListView(ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        post_id = self.kwargs['post_id']
+        return Comment.objects.filter(post_id=post_id).order_by('-created_at')

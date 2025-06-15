@@ -24,7 +24,7 @@ from .serializers import (
 )
 
 from .models import CustomUser, Following
-from posts.models import Post, Notification 
+from posts.models import Post, LegacyNotification 
 
 User = get_user_model()
 
@@ -77,7 +77,7 @@ class FollowView(APIView):
         if not created:
             return Response({'message': 'You already follow this user'}, status=status.HTTP_200_OK)
 
-        Notification.objects.create(
+        LegacyNotification.objects.create(
             recipient=to_follow,
             sender=request.user,
             notification_type='follow'

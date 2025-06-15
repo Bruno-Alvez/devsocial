@@ -14,7 +14,6 @@ import {
   SearchUsername
 } from './styles';
 
-
 import { useEffect, useState } from 'react';
 import Footer from '../../components/Footer';
 import { useAuth } from '../../contexts/AuthContext';
@@ -33,22 +32,19 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
-
   useEffect(() => {
     const loadFeed = async () => {
       try {
         const data = await fetchUserFeed(token as string);
         setPosts(data);
-      } catch (err: any) {
+      } catch (err) {
         console.error('Failed to load feed:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (token) {
-      loadFeed();
-    }
+    if (token) loadFeed();
   }, [token]);
 
   useEffect(() => {
@@ -64,17 +60,14 @@ export default function HomePage() {
         setSearchResults([]);
       }
     }, 500);
-
     return () => clearTimeout(delayDebounce);
   }, [searchQuery, token]);
 
   const handleCreatePost = async () => {
     if (!newPostContent.trim() && !newPostImage) return;
-
     const formData = new FormData();
     formData.append('content', newPostContent);
     if (newPostImage) formData.append('image', newPostImage);
-
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/`, {
         method: 'POST',
@@ -83,9 +76,7 @@ export default function HomePage() {
         },
         body: formData,
       });
-
       if (!response.ok) throw new Error('Erro ao criar post');
-
       const createdPost = await response.json();
       setPosts([createdPost, ...posts]);
       setNewPostContent('');
@@ -97,12 +88,12 @@ export default function HomePage() {
 
   return (
     <Container>
-      <Sidebar/>
+      <Sidebar />
       <FeedWrapper>
         <Feed>
           <SearchInput
             type="text"
-            placeholder="Digite o nome de alguém e veja se ele está no Devsocial..."
+            placeholder="Digite o nome de alguém..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -110,8 +101,8 @@ export default function HomePage() {
             <div>
               {searchResults.map(user => (
                 <SearchResult key={user.id} to={`/users/${user.username}`}>
-                  <SearchAvatar src={getAvatarUrl(user.avatar) || '/profile-user.png'} alt={user.username} />
-                  <SearchUsername>@ {user.username}</SearchUsername>
+                  <SearchAvatar src={getAvatarUrl(user.avatar)} alt={user.username} />
+                  <SearchUsername>@{user.username}</SearchUsername>
                 </SearchResult>
               ))}
             </div>
@@ -142,11 +133,9 @@ export default function HomePage() {
           {loading ? (
             <PostText>Carregando...</PostText>
           ) : posts.length === 0 ? (
-            <PostText>Você ainda não tem nenhuma postagem no feed. Siga alguém para ver o que ela está pensando.</PostText>
+            <PostText>Você ainda não tem nenhuma postagem no feed.</PostText>
           ) : (
-            posts.map((post: any) => (
-              <PostItem key={post.id} post={post} />
-            ))
+            posts.map(post => <PostItem key={post.id} post={post} />)
           )}
         </Feed>
         <Footer />
