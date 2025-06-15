@@ -21,7 +21,7 @@ export default function Sidebar() {
       <S.Divider />
       <S.SidebarUser>
         <S.SidebarAvatar src={getAvatarUrl(user?.avatar)} alt="User" />
-        <span>@ {user?.username}</span>
+        <span>@{user?.username}</span>
       </S.SidebarUser>
 
       <S.NavItem as={Link} to="/"><FiHome /> Início</S.NavItem>

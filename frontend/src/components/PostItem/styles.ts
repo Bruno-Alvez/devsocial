@@ -63,6 +63,15 @@ export const DeleteButton = styled.button`
   }
 `;
 
+export const ActionRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+`;
+
+
 export const LikeButton = styled.button`
   background-color: transparent;
   color: #2f81f7;
@@ -86,4 +95,43 @@ export const LikesCount = styled.p`
   font-size: 0.85rem;
   color: #8b949e;
   margin-top: 0.5rem;
+`;
+
+export const CommentToggleButton = styled.button`
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.9rem;
+  color: #2f81f7;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export const ActionButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  color: #c9d1d9;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+
+  svg {
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    background-color: #21262d;
+  }
 `;

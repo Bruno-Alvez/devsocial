@@ -7,6 +7,7 @@ import MyPosts from '../pages/MyPost';
 import Profile from '../pages/ProfilePage';
 import PublicProfile from '../pages/ProfilePage/PublicProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute';
+import Notifications from '../pages/NotificationsPage'
 
 export default function AppRoutes() {
   return (
@@ -49,6 +50,7 @@ export default function AppRoutes() {
         />
 
         <Route path="/users/:username" element={<PublicProfile />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Routes>
     </BrowserRouter>
   );

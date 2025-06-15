@@ -28,7 +28,7 @@ class Comment(models.Model):
     def __str__(self):
         return f'{self.author.username} on {self.post.id}'
     
-class Notification(models.Model):
+class LegacyNotification(models.Model):
     NOTIFICATION_TYPES = (
         ('like', 'Like'),
         ('comment', 'Comment'),
