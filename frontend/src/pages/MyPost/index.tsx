@@ -1,11 +1,4 @@
-import {
-  Container,
-  FeedWrapper,
-  Feed,
-  PostText,
-  CreateButton,
-  FeedHeader,
-} from './styles';
+import * as S from './styles';
 
 import {
   FiPlus,
@@ -65,29 +58,29 @@ export default function MyPosts() {
   };
 
   return (
-    <Container>
+    <S.Container>
       <Sidebar/>
-      <FeedWrapper>
-        <Feed>
-          <FeedHeader>
+      <S.FeedWrapper>
+        <S.Feed>
+          <S.FeedHeader>
             <h2 style={{ fontSize: '1.3rem', marginBottom: '1rem', color: '#e6edf3' }}>Minhas Publicações</h2>
-            <CreateButton as={Link} to="/post/new">
+            <S.CreateButton as={Link} to="/post/new">
               <FiPlus style={{ marginRight: '0.5rem' }} /> Nova publicação
-            </CreateButton>
-          </FeedHeader>
+            </S.CreateButton>
+          </S.FeedHeader>
 
           {loading ? (
-            <PostText>Carregando...</PostText>
+            <S.PostText>Carregando...</S.PostText>
           ) : myPosts.length === 0 ? (
-            <PostText>Você ainda não publicou nada.</PostText>
+            <S.PostText>Você ainda não publicou nada.</S.PostText>
           ) : (
             myPosts.map((post) => (
               <PostItem key={post.id} post={post} showDeleteButton onDelete={() => handleDelete(post.id)} />
             ))
           )}
-        </Feed>
-      </FeedWrapper>
+        </S.Feed>
+      </S.FeedWrapper>
       <Footer />
-    </Container>
+    </S.Container>
   );
 }

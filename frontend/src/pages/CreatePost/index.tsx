@@ -1,17 +1,4 @@
-import {
-  Container,
-  Sidebar,
-  FeedWrapper,
-  Feed,
-  FeedHeader,
-  Form,
-  Label,
-  TextArea,
-  SubmitButton,
-  FileInputWrapper,
-  HiddenInput,
-  UploadLabel,
-} from './styles';
+import * as S from './styles';
 
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -58,26 +45,26 @@ export default function CreatePost() {
   };
 
   return (
-    <Container>
-      <Sidebar />
-      <FeedWrapper>
-        <Feed>
-          <FeedHeader>
+    <S.Container>
+      <S.Sidebar />
+      <S.FeedWrapper>
+        <S.Feed>
+          <S.FeedHeader>
             <h2 style={{ fontSize: '1.3rem', color: '#e6edf3' }}>Criar nova publicação</h2>
-          </FeedHeader>
+          </S.FeedHeader>
 
-          <Form onSubmit={handleSubmit}>
-            <Label htmlFor="content">Texto da publicação</Label>
-            <TextArea
+          <S.Form onSubmit={handleSubmit}>
+            <S.Label htmlFor="content">Texto da publicação</S.Label>
+            <S.TextArea
               id="content"
               placeholder="No que você está pensando?"
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
 
-            <Label htmlFor="image">Adicione uma imagem a publicação (Opcional)</Label>
-            <FileInputWrapper>
-                <HiddenInput
+            <S.Label htmlFor="image">Adicione uma imagem a publicação (Opcional)</S.Label>
+            <S.FileInputWrapper>
+                <S.HiddenInput
                     type="file"
                     id="image"
                     accept="image/*"
@@ -86,10 +73,10 @@ export default function CreatePost() {
                         if (file) setImage(file);
                     }}
                 />
-                <UploadLabel htmlFor="image">
+                <S.UploadLabel htmlFor="image">
                     <img src="/photo.png" alt="Upload" />
-                </UploadLabel>
-            </FileInputWrapper>
+                </S.UploadLabel>
+            </S.FileInputWrapper>
 
             {image && (
                 <img
@@ -105,10 +92,10 @@ export default function CreatePost() {
 )}
 
 
-            <SubmitButton type="submit">Publicar</SubmitButton>
-          </Form>
-        </Feed>
-      </FeedWrapper>
-    </Container>
+            <S.SubmitButton type="submit">Publicar</S.SubmitButton>
+          </S.Form>
+        </S.Feed>
+      </S.FeedWrapper>
+    </S.Container>
   );
 }

@@ -1,18 +1,4 @@
-import {
-  Container,
-  FeedWrapper,
-  Feed,
-  FeedHeader,
-  PostBox,
-  UserAvatar,
-  PlaceholderText,
-  PostButton,
-  PostText,
-  SearchInput,
-  SearchResult,
-  SearchAvatar,
-  SearchUsername
-} from './styles';
+import * as S from './styles';
 
 import { useEffect, useState } from 'react';
 import Footer from '../../components/Footer';
@@ -87,11 +73,11 @@ export default function HomePage() {
   };
 
   return (
-    <Container>
+    <S.Container>
       <Sidebar />
-      <FeedWrapper>
-        <Feed>
-          <SearchInput
+      <S.FeedWrapper>
+        <S.Feed>
+          <S.SearchInput
             type="text"
             placeholder="Digite o nome de alguém..."
             value={searchQuery}
@@ -100,18 +86,18 @@ export default function HomePage() {
           {searchResults.length > 0 && (
             <div>
               {searchResults.map(user => (
-                <SearchResult key={user.id} to={`/users/${user.username}`}>
-                  <SearchAvatar src={getAvatarUrl(user.avatar)} alt={user.username} />
-                  <SearchUsername>@{user.username}</SearchUsername>
-                </SearchResult>
+                <S.SearchResult key={user.id} to={`/users/${user.username}`}>
+                  <S.SearchAvatar src={getAvatarUrl(user.avatar)} alt={user.username} />
+                  <S.SearchUsername>@{user.username}</S.SearchUsername>
+                </S.SearchResult>
               ))}
             </div>
           )}
 
-          <FeedHeader>
-            <PostBox>
-              <UserAvatar src={getAvatarUrl(user?.avatar)} alt="User" />
-              <PlaceholderText
+          <S.FeedHeader>
+            <S.PostBox>
+              <S.UserAvatar src={getAvatarUrl(user?.avatar)} alt="User" />
+              <S.PlaceholderText
                 placeholder="No que você está pensando?"
                 value={newPostContent}
                 onChange={(e) => setNewPostContent(e.target.value)}
@@ -124,22 +110,22 @@ export default function HomePage() {
                 id="upload-img"
               />
               <label htmlFor="upload-img" style={{ marginLeft: '0.5rem', cursor: 'pointer', color: '#2f81f7' }}>📎</label>
-              <PostButton onClick={handleCreatePost}>Postar</PostButton>
-            </PostBox>
-          </FeedHeader>
+              <S.PostButton onClick={handleCreatePost}>Postar</S.PostButton>
+            </S.PostBox>
+          </S.FeedHeader>
 
           <UserSuggestions />
 
           {loading ? (
-            <PostText>Carregando...</PostText>
+            <S.PostText>Carregando...</S.PostText>
           ) : posts.length === 0 ? (
-            <PostText>Você ainda não tem nenhuma postagem no feed.</PostText>
+            <S.PostText>Você ainda não tem nenhuma postagem no feed.</S.PostText>
           ) : (
             posts.map(post => <PostItem key={post.id} post={post} />)
           )}
-        </Feed>
+        </S.Feed>
         <Footer />
-      </FeedWrapper>
-    </Container>
+      </S.FeedWrapper>
+    </S.Container>
   );
 }

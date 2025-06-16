@@ -1,14 +1,4 @@
-import {
-  Container,
-  Form,
-  Logo,
-  Title,
-  Input,
-  InputWrapper,
-  InputIcon,
-  Button,
-  ErrorMessage,
-} from './styles';
+import * as S from './styles';
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -49,57 +39,57 @@ export default function Register() {
   };
 
   return (
-    <Container>
-      <Form onSubmit={handleRegister}>
-        <Logo>{'</> devSocial'}</Logo>
-        <Title>Crie sua conta</Title>
+    <S.Container>
+      <S.Form onSubmit={handleRegister}>
+        <S.Logo>{'</> devSocial'}</S.Logo>
+        <S.Title>Crie sua conta</S.Title>
 
-        <InputWrapper>
-          <InputIcon>📧</InputIcon>
-          <Input
+        <S.InputWrapper>
+          <S.InputIcon>📧</S.InputIcon>
+          <S.Input
             type="email"
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
           />
-        </InputWrapper>
+        </S.InputWrapper>
 
-        <InputWrapper>
-          <InputIcon>👤</InputIcon>
-          <Input
+        <S.InputWrapper>
+          <S.InputIcon>👤</S.InputIcon>
+          <S.Input
             type="text"
             placeholder="Username"
             value={username}
             onChange={e => setUsername(e.target.value)}
             required
           />
-        </InputWrapper>
+        </S.InputWrapper>
 
-        <InputWrapper>
-          <InputIcon>📝</InputIcon>
-          <Input
+        <S.InputWrapper>
+          <S.InputIcon>📝</S.InputIcon>
+          <S.Input
             type="text"
             placeholder="Nome"
             value={name}
             onChange={e => setName(e.target.value)}
             required
           />
-        </InputWrapper>
+        </S.InputWrapper>
 
-        <InputWrapper>
-          <InputIcon>🔒</InputIcon>
-          <Input
+        <S.InputWrapper>
+          <S.InputIcon>🔒</S.InputIcon>
+          <S.Input
             type="password"
             placeholder="Senha"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
           />
-        </InputWrapper>
+        </S.InputWrapper>
 
-        <Button type="submit">Registrar</Button>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <S.Button type="submit">Registrar</S.Button>
+        {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
 
         <p style={{ marginTop: '1rem', color: '#8b949e', fontSize: '0.95rem' }}>
             Já possui conta?{' '}
@@ -109,8 +99,8 @@ export default function Register() {
         </p>
 
 
-      </Form>
+      </S.Form>
       <Footer />
-    </Container>
+    </S.Container>
   );
 }
