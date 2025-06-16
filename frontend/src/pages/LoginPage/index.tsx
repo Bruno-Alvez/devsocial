@@ -1,15 +1,4 @@
-import {
-  Container,
-  Form,
-  Logo,
-  Title,
-  Input,
-  InputWrapper,
-  InputIcon,
-  Button,
-  ErrorMessage,
-  SuccessMessage,
-} from './styles';
+import * as S from './styles';
 
 import { useState, useEffect} from 'react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -59,36 +48,36 @@ export default function Login() {
   }, []);
 
   return (
-    <Container>
-      <Form onSubmit={handleSubmit}>
-        {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
-        <Logo>{'</> devSocial'}</Logo>
-        <Title>Bem vindo de volta</Title>
+    <S.Container>
+      <S.Form onSubmit={handleSubmit}>
+        {successMessage && <S.SuccessMessage>{successMessage}</S.SuccessMessage>}
+        <S.Logo>{'</> devSocial'}</S.Logo>
+        <S.Title>Bem vindo de volta</S.Title>
 
-        <InputWrapper>
-          <InputIcon>👤</InputIcon>
-          <Input
+        <S.InputWrapper>
+          <S.InputIcon>👤</S.InputIcon>
+          <S.Input
             type="email"
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
           />
-        </InputWrapper>
+        </S.InputWrapper>
 
-        <InputWrapper>
-          <InputIcon>🔒</InputIcon>
-          <Input
+        <S.InputWrapper>
+          <S.InputIcon>🔒</S.InputIcon>
+          <S.Input
             type="password"
             placeholder="Senha"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
           />
-        </InputWrapper>
+        </S.InputWrapper>
 
-        <Button type="submit">Entrar</Button>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <S.Button type="submit">Entrar</S.Button>
+        {error && <S.ErrorMessage>{error}</S.ErrorMessage>}
 
         <p style={{ marginTop: '1rem', color: '#8b949e', fontSize: '0.95rem' }}>
             Novo por aqui?{' '}
@@ -97,8 +86,8 @@ export default function Login() {
           </Link>
         </p>
 
-      </Form>
+      </S.Form>
       <Footer />
-    </Container>
+    </S.Container>
   );
 }

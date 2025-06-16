@@ -1,22 +1,4 @@
-import {
-  Container,
-  FeedWrapper,
-  Feed,
-  FeedHeader,
-  ProfileAvatar,
-  ProfileInfo,
-  Username,
-  InfoLabel,
-  InfoValue,
-  InputField,
-  EditButton,
-  UploadInput,
-  SuccessMessage,
-  BottomActions,
-  ActionButton,
-  ProfileColumn,
-  DividerVertical
-} from './styles';
+import * as S from './styles';
 
 import {
   FiEdit, FiCheck, FiTrash2, FiX
@@ -194,24 +176,24 @@ export default function ProfilePage() {
 
   const renderField = (label: string, field: keyof ProfileData) => (
     <div>
-      <InfoLabel>{label}</InfoLabel>
+      <S.InfoLabel>{label}</S.InfoLabel>
       {isOwnProfile && editingField === field ? (
         <>
-          <InputField
+          <S.InputField
             value={profile[field] || ''}
             onChange={e => setProfile({ ...profile, [field]: e.target.value })}
           />
-          <EditButton onClick={() => handleSaveField(field, String(profile[field] ?? ''))}>
+          <S.EditButton onClick={() => handleSaveField(field, String(profile[field] ?? ''))}>
             <FiCheck /> Salvar
-          </EditButton>
+          </S.EditButton>
         </>
       ) : (
         <>
-          <InfoValue>{profile[field] || '-'}</InfoValue>
+          <S.InfoValue>{profile[field] || '-'}</S.InfoValue>
           {isOwnProfile && (
-            <EditButton onClick={() => setEditingField(field)}>
+            <S.EditButton onClick={() => setEditingField(field)}>
               <FiEdit /> Editar
-            </EditButton>
+            </S.EditButton>
           )}
         </>
       )}
@@ -222,56 +204,56 @@ export default function ProfilePage() {
   const avatarPreviewSrc = previewAvatar || (profile.avatar ? (profile.avatar.startsWith('http') ? profile.avatar : `${apiBase}${profile.avatar}`) : '/profile-user.png');
 
   return (
-    <Container>
+    <S.Container>
       <Sidebar />
-      <FeedWrapper>
-        <Feed>
-          <FeedHeader>
-            <ProfileColumn>
-              <ProfileAvatar src={avatarPreviewSrc} alt="Avatar" />
+      <S.FeedWrapper>
+        <S.Feed>
+          <S.FeedHeader>
+            <S.ProfileColumn>
+              <S.ProfileAvatar src={avatarPreviewSrc} alt="Avatar" />
               {isOwnProfile && (
                 <>
-                  <UploadInput
+                  <S.UploadInput
                     type="file"
                     accept="image/*"
                     onChange={handleAvatarPreview}
                   />
-                  <EditButton onClick={handleAvatarUpload}>
+                  <S.EditButton onClick={handleAvatarUpload}>
                     <FiCheck /> Atualizar foto de perfil
-                  </EditButton>
-                  <EditButton onClick={handleRemoveAvatar}>
+                  </S.EditButton>
+                  <S.EditButton onClick={handleRemoveAvatar}>
                     <FiX /> Remover foto
-                  </EditButton>
+                  </S.EditButton>
                 </>
               )}
-            </ProfileColumn>
+            </S.ProfileColumn>
 
-            <DividerVertical />
+            <S.DividerVertical />
 
-            <ProfileInfo>
-              <Username>@{profile.username}</Username>
+            <S.ProfileInfo>
+              <S.Username>@{profile.username}</S.Username>
               {renderField('Bio: (Conte-nos sobre você)', 'bio')}
               {renderField('E-mail: Ex: (seuemail@seuemail.com)', 'email')}
               {renderField('Localização: Ex: (Cidade-Estado-País)', 'location')}
               {renderField('Nascimento: Ex: (DD/MM/AAAA)', 'birth_date')}
-            </ProfileInfo>
-          </FeedHeader>
+            </S.ProfileInfo>
+          </S.FeedHeader>
 
-          {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
+          {successMessage && <S.SuccessMessage>{successMessage}</S.SuccessMessage>}
 
           {isOwnProfile && (
-            <BottomActions>
-              <ActionButton primary onClick={handleSaveAll}>
+            <S.BottomActions>
+              <S.ActionButton primary onClick={handleSaveAll}>
                 <FiCheck /> Salvar perfil
-              </ActionButton>
-              <ActionButton danger onClick={handleDeleteAccount}>
+              </S.ActionButton>
+              <S.ActionButton danger onClick={handleDeleteAccount}>
                 <FiTrash2 /> Excluir conta
-              </ActionButton>
-            </BottomActions>
+              </S.ActionButton>
+            </S.BottomActions>
           )}
-        </Feed>
+        </S.Feed>
         <Footer />
-      </FeedWrapper>
-    </Container>
+      </S.FeedWrapper>
+    </S.Container>
   );
 }

@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '../../contexts/AuthContext'
-import {
-  CommentItem,
-  CommentContainer,
-  CommentHeader,
-  CommentAuthor,
-  CommentDate,
-  CommentText
-} from './styles'
+import * as S from './styles'
 
 interface Comment {
   id: number
@@ -49,7 +42,6 @@ export const CommentList = ({ post, newComment }: CommentListProps) => {
     fetchComments()
   }, [post.id, token])
 
-  // Opcional: insere novo comentário ao topo da lista
   useEffect(() => {
     if (newComment) {
       setComments((prev) => [newComment, ...prev])
@@ -59,18 +51,18 @@ export const CommentList = ({ post, newComment }: CommentListProps) => {
   if (loading) return <p>Carregando comentários...</p>
 
   return (
-    <CommentContainer>
+    <S.CommentContainer>
       {comments.map((comment) => (
-        <CommentItem key={comment.id}>
-          <CommentHeader>
-            <CommentAuthor>@{comment.author_username}</CommentAuthor>
-            <CommentDate>
+        <S.CommentItem key={comment.id}>
+          <S.CommentHeader>
+            <S.CommentAuthor>@{comment.author_username}</S.CommentAuthor>
+            <S.CommentDate>
               {new Date(comment.created_at).toLocaleString('pt-BR')}
-            </CommentDate>
-          </CommentHeader>
-          <CommentText>{comment.content}</CommentText>
-        </CommentItem>
+            </S.CommentDate>
+          </S.CommentHeader>
+          <S.CommentText>{comment.content}</S.CommentText>
+        </S.CommentItem>
       ))}
-    </CommentContainer>
+    </S.CommentContainer>
   )
 }

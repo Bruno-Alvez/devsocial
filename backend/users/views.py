@@ -129,13 +129,6 @@ class UserSearchView(ListAPIView):
 class EmailLoginView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-class UserSearchView(ListAPIView):
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-    filter_backends = [SearchFilter]
-    search_fields = ['username']
-
 
 class UserSuggestionView(APIView):
     permission_classes = [IsAuthenticated]
