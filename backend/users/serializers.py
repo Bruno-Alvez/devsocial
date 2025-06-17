@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.response import Response
@@ -33,12 +34,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         ready_only_fields = ["id", "username", "email"]
 
 class FollowingSerializer(serializers.ModelSerializer):
-    follower = serializers.StringRelatedField(read_only=True)
-    followed = serializers.StringRelatedField(read_only=True)
+    id = serializers.IntegerField(source='followed.id')
+    username = serializers.CharField(source='followed.username')
+    avatar = serializers.ImageField(source='followed.avatar', read_only=True)
 
     class Meta:
         model = Following
-        fields = ['id', 'follower', 'followed', 'created_at']
+        fields = ['id', 'username', 'avatar',]
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
@@ -70,7 +72,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         user = authenticate(**credentials)
 
         if user is None:
-            raise serializers.ValidationError("Credenciais incorretas!.")
+            if user is None:
+                raise AuthenticationFailed("Credenciais incorretas!")
+
 
         refresh = self.get_token(user)
 
