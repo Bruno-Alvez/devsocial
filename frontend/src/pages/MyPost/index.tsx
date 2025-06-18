@@ -19,7 +19,7 @@ export default function MyPosts() {
   useEffect(() => {
     const fetchMyPosts = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/posts/me/', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/me/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -42,7 +42,7 @@ export default function MyPosts() {
     if (!confirm('Tem certeza que deseja excluir esta publicação?')) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/posts/${id}/delete/`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/${id}/delete/`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

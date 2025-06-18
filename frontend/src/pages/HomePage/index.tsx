@@ -119,7 +119,7 @@ export default function HomePage() {
           {loading ? (
             <S.PostText>Carregando...</S.PostText>
           ) : posts.length === 0 ? (
-            <S.PostText>Você ainda não tem nenhuma postagem no feed.</S.PostText>
+            <S.PostText>Você ainda não tem nenhuma postagem no feed, publique ou siga algúem pra atualizar seu feed.</S.PostText>
           ) : (
             posts.map(post => <PostItem key={post.id} post={post} />)
           )}
