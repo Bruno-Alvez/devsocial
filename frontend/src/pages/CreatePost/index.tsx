@@ -29,7 +29,7 @@ export default function CreatePost() {
     
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/posts/', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
