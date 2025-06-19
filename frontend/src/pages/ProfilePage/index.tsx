@@ -139,7 +139,6 @@ export default function ProfilePage() {
         body: JSON.stringify({ avatar: null }),
       });
       if (!res.ok) throw new Error();
-      const updated = await res.json();
       updateUser({ avatar: null });
       setProfile({ ...profile, avatar: null } as ProfileData);
       setPreviewAvatar(null);
