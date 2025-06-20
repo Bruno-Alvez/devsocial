@@ -1,13 +1,8 @@
 export function getAvatarUrl(avatarPath?: string | null): string {
   const fallback = '/profile-user.png';
-
   if (!avatarPath) return fallback;
 
-  if (
-    avatarPath.startsWith('http') ||
-    avatarPath.startsWith('//') ||
-    avatarPath.includes('res.cloudinary.com')
-  ) {
+  if (avatarPath.startsWith('http') || avatarPath.startsWith('https')) {
     return avatarPath;
   }
 

@@ -14,6 +14,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export default function Sidebar() {
   const { user } = useAuth();
+  console.log('Avatar recebido:', user?.avatar)
 
   return (
     <S.SidebarContainer>
