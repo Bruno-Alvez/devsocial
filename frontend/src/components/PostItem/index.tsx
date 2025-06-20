@@ -68,11 +68,9 @@ export default function PostItem({ post, showDeleteButton = false, onDelete }: P
       console.error('Erro ao curtir/descurtir:', error)
     }
   }
-  console.log('Avatar do post:', post.author.avatar)
 
   return (
     <S.PostCard>
-      <p>{getAvatarUrl(post.author.avatar)}</p>
       <S.Avatar src={getAvatarUrl(post.author.avatar)} alt="Avatar do autor" crossOrigin='anonymous'/>
       <S.Content>
         <S.Username>@{post.author.username}</S.Username>

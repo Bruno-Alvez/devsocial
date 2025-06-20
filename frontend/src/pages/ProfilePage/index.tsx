@@ -109,7 +109,7 @@ export default function ProfilePage() {
       });
       if (!res.ok) throw new Error();
       const updated = await res.json();
-      updateUser({ avatar: updated.avatar });
+      updateUser({ ...user, avatar: updated.avatar });
 
       setProfile({ ...profile, ...updated });
       setSuccessMessage('Foto de perfil atualizada com sucesso!');

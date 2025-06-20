@@ -19,7 +19,6 @@ export default function CreatePost() {
     return;
   }
 
-  console.log('Token enviado no POST:', token);
 
 
     const formData = new FormData();

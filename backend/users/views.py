@@ -9,7 +9,6 @@ from rest_framework.filters import SearchFilter
 from rest_framework import filters
 from rest_framework import serializers
 
-
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
@@ -23,8 +22,6 @@ from .serializers import (
 )
 
 from posts.serializers import PostSerializer
-
-
 from .models import CustomUser, Following
 from posts.models import Post, LegacyNotification 
 
@@ -48,11 +45,16 @@ class MeView(APIView):
 class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser, JSONParser] 
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_object(self):
         return self.request.user
-    
+
+    def perform_update(self, serializer):
+        # Isso garante que o campo avatar (e qualquer outro) será salvo
+        serializer.save()
+
+
 class PublicProfileView(RetrieveAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.AllowAny]
@@ -61,6 +63,7 @@ class PublicProfileView(RetrieveAPIView):
         username = self.kwargs['username']
         user = get_object_or_404(CustomUser, username=username, is_private=False)
         return user
+
 
 class FollowView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -111,7 +114,8 @@ class FollowingListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Following.objects.filter(follower=self.request.user)
-    
+
+
 class PublicUserPostsView(ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [permissions.AllowAny]
@@ -121,12 +125,14 @@ class PublicUserPostsView(ListAPIView):
         user = get_object_or_404(CustomUser, username=username, is_private=False)
         return Post.objects.filter(author=user).order_by('-created_at')
 
+
 class UserSearchView(ListAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.AllowAny]
     queryset = CustomUser.objects.filter(is_private=False)
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
+
 
 class EmailLoginView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -141,5 +147,3 @@ class UserSuggestionView(APIView):
         suggestions = CustomUser.objects.exclude(id__in=following_ids).exclude(id=user.id)[:10]
         serializer = UserSuggestionSerializer(suggestions, many=True)
         return Response(serializer.data)
-
-

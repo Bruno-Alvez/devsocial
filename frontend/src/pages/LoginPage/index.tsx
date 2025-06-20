@@ -26,7 +26,6 @@ export default function Login() {
       });
 
       const data = await response.json();
-      console.log('Resposta da API:', data);
 
       if (!response.ok) {
         throw new Error(data.detail || 'Credenciais inválidas');
