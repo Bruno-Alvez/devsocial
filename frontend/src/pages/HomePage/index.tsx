@@ -96,7 +96,7 @@ export default function HomePage() {
 
           <S.FeedHeader>
             <S.PostBox>
-              <S.UserAvatar src={getAvatarUrl(user?.avatar)} alt="User" />
+              <S.UserAvatar src={getAvatarUrl(user?.avatar)} alt="User" crossOrigin='anonymous'/>
               <S.PlaceholderText
                 placeholder="No que você está pensando?"
                 value={newPostContent}

@@ -54,7 +54,7 @@ export default function UserSuggestions() {
         {suggestions.map((user) => (
           <S.SuggestionCard key={user.username}>
             <Link to={`/users/${user.username}`}>
-              <S.Avatar src={getAvatarUrl(user.avatar)} />
+              <S.Avatar src={getAvatarUrl(user.avatar)} crossOrigin='anonymous'/>
               <S.Username>@{user.username}</S.Username>
             </Link>
             <S.FollowButton onClick={() => toggleFollow(user.username)}>

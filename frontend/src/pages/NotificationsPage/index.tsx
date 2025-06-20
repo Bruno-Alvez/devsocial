@@ -72,6 +72,7 @@ export default function NotificationsPage() {
                 <S.Avatar
                   src={getAvatarUrl(notification.sender_avatar) || '/profile-user.png'}
                   alt="Avatar"
+                  crossOrigin='anonymous'
                 />
                 <S.Content>
                   <S.Username>

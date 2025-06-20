@@ -73,7 +73,7 @@ export default function PostItem({ post, showDeleteButton = false, onDelete }: P
   return (
     <S.PostCard>
       <p>{getAvatarUrl(post.author.avatar)}</p>
-      <S.Avatar src={getAvatarUrl(post.author.avatar)} alt="Avatar do autor" />
+      <S.Avatar src={getAvatarUrl(post.author.avatar)} alt="Avatar do autor" crossOrigin='anonymous'/>
       <S.Content>
         <S.Username>@{post.author.username}</S.Username>
         <S.Timestamp>
@@ -89,8 +89,9 @@ export default function PostItem({ post, showDeleteButton = false, onDelete }: P
 
         {post.image && (
           <S.PostImage
-            src={post.image.startsWith('http') ? post.image : `${apiBase}${post.image}`}
+            src={post.image && post.image.startsWith('http') ? post.image : `${apiBase}${post.image || ''}`}
             alt="Imagem do post"
+            onError={(e) => { e.currentTarget.src = '/fallback-image.png'; }}
           />
         )}
 

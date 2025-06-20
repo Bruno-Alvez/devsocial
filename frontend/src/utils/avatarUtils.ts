@@ -1,11 +1,15 @@
 export function getAvatarUrl(avatarPath?: string | null): string {
   const fallback = '/profile-user.png';
-  if (!avatarPath) return fallback;
 
-  if (avatarPath.startsWith('http') || avatarPath.startsWith('https')) {
-    return avatarPath;
+  if (!avatarPath || typeof avatarPath !== 'string' || avatarPath.trim() === '') {
+    return fallback;
   }
 
-  const baseApi = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:8000';
-  return `${baseApi}${avatarPath}`;
+  try {
+    const url = new URL(avatarPath);
+    return url.href;
+  } catch {
+    const baseApi = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:8000';
+    return `${baseApi}${avatarPath}`;
+  }
 }

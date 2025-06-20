@@ -21,7 +21,7 @@ export default function Sidebar() {
       <S.Header>{'</> devSocial'}</S.Header>
       <S.Divider />
       <S.SidebarUser>
-        <S.SidebarAvatar src={getAvatarUrl(user?.avatar)} alt="User" />
+        <S.SidebarAvatar src={getAvatarUrl(user?.avatar)} alt="User" crossOrigin='anonymous'/>
         <span>@{user?.username}</span>
       </S.SidebarUser>
 
