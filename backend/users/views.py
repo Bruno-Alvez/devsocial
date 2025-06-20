@@ -17,11 +17,13 @@ from .serializers import (
     RegisterSerializer,
     ProfileSerializer,
     FollowingSerializer,
-    PostSerializer,
     MyTokenObtainPairSerializer,
     UserSerializer,
     UserSuggestionSerializer
 )
+
+from posts.serializers import PostSerializer
+
 
 from .models import CustomUser, Following
 from posts.models import Post, LegacyNotification 
