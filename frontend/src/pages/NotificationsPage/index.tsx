@@ -13,6 +13,7 @@ interface Notification {
   is_read: boolean;
   timestamp: string;
   sender_username: string;
+  sender_avatar: string | null;
 }
 
 export default function NotificationsPage() {
@@ -69,7 +70,7 @@ export default function NotificationsPage() {
             notifications.map((notification) => (
               <S.PostCard key={notification.id}>
                 <S.Avatar
-                  src={getAvatarUrl(null) || '/profile-user.png'}
+                  src={getAvatarUrl(notification.sender_avatar) || '/profile-user.png'}
                   alt="Avatar"
                 />
                 <S.Content>

@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Footer from '../../components/Footer';
 import Sidebar from '../../components/Sidebar';
+import { getAvatarUrl } from '../../utils/avatarUtils';
 
 interface ProfileData {
   id?: number;
@@ -199,8 +200,7 @@ export default function ProfilePage() {
     </div>
   );
 
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:8000';
-  const avatarPreviewSrc = previewAvatar || (profile.avatar ? (profile.avatar.startsWith('http') ? profile.avatar : `${apiBase}${profile.avatar}`) : '/profile-user.png');
+  const avatarPreviewSrc = previewAvatar || getAvatarUrl(profile.avatar);
 
   return (
     <S.Container>
