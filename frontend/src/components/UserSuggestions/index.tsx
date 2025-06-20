@@ -6,7 +6,7 @@ import { Link }  from 'react-router-dom';
 interface User {
   id: number;
   username: string;
-  profile_picture?: string;
+  avatar? : string | null
   is_following: boolean;
 }
 
@@ -53,7 +53,7 @@ export default function UserSuggestions() {
         {suggestions.map((user) => (
           <S.SuggestionCard key={user.username}>
             <Link to={`/users/${user.username}`}>
-              <S.Avatar src={user.profile_picture || '/profile-user.png'} />
+              <S.Avatar src={user.avatar || '/profile-user.png'} />
               <S.Username>@{user.username}</S.Username>
             </Link>
             <S.FollowButton onClick={() => toggleFollow(user.username)}>

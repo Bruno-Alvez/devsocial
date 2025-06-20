@@ -14,6 +14,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 load_dotenv()
 
@@ -46,7 +49,10 @@ INSTALLED_APPS = [
     'users',
     'posts',
     'corsheaders',
-    'notifications'
+    'notifications',
+    'cloudinary',
+    'cloudinary_storage'
+
 ]
 
 # Custom user model
@@ -153,3 +159,10 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+cloudinary.config(
+    secure=True
+)
+
