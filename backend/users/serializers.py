@@ -28,6 +28,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class ProfileSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(use_url=True)
     class Meta:
         model = CustomUser
         fields = ["id", "username", "email", "birth_date", "location", "avatar", "bio", "is_private"]
@@ -85,16 +86,19 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                 'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'avatar': user.avatar.url if user.avatar else None
+                'avatar': user.avatar.url if user.avatar and hasattr(user.avatar, 'url') else None
+
             }
         }
 
 class UserSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(use_url=True)
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'avatar']
 
 class UserSuggestionSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(use_url=True)
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'avatar']
