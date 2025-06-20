@@ -1,11 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.db import models
-
+from cloudinary.models import CloudinaryField
 
 class CustomUser(AbstractUser):
     bio = models.TextField(blank=True, null=True)
-    avatar = models.ImageField(blank=True, null=True)
+    avatar = CloudinaryField('avatar' , blank=True, null=True)
     email = models.EmailField(unique=True)
     birth_date = models.DateField(blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)
