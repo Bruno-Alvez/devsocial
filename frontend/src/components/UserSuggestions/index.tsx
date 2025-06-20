@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import * as S from './styles'
 import { useAuth } from '../../contexts/AuthContext';
 import { Link }  from 'react-router-dom';
+import { getAvatarUrl } from '../../utils/avatarUtils';
 
 interface User {
   id: number;
@@ -53,7 +54,7 @@ export default function UserSuggestions() {
         {suggestions.map((user) => (
           <S.SuggestionCard key={user.username}>
             <Link to={`/users/${user.username}`}>
-              <S.Avatar src={user.avatar || '/profile-user.png'} />
+              <S.Avatar src={getAvatarUrl(user.avatar)} />
               <S.Username>@{user.username}</S.Username>
             </Link>
             <S.FollowButton onClick={() => toggleFollow(user.username)}>
