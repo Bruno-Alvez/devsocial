@@ -5,9 +5,16 @@ from users.serializers import UserSerializer
 
 
 class PostAuthorSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
         fields = ['username', 'avatar']
+
+    def get_avatar(self, obj):
+        if obj.avatar and hasattr(obj.avatar, 'url'):
+            return obj.avatar.url
+        return None
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -29,7 +36,6 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'author', 'content', 'image', 'likes_count', 'created_at', 'comments']
         read_only_fields = ['id', 'author', 'likes_count', 'created_at']
 
-
     def get_likes_count(self, obj):
         return obj.likes.count()
 
@@ -41,10 +47,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = [
-            'id', 'author', 'content', 'image',
-            'likes_count', 'created_at', 'comments'
-        ]
+        fields = ['id', 'author', 'content', 'image', 'likes_count', 'created_at', 'comments']
         read_only_fields = ['id', 'author', 'likes_count', 'created_at', 'comments']
 
     def get_likes_count(self, obj):
