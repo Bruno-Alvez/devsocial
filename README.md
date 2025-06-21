@@ -99,9 +99,7 @@ I'm Bruno Alves — a former military professional now fully focused on a career
 Currently studying Full Stack Python at EBAC and Systems Analysis at Estácio de Sá University.
 
 LinkedIn: https://www.linkedin.com/in/brunoalves-tech/
-Screenshots
 
-Add screenshots here to illustrate the user interface and key functionalities.
 License
 
 This project is for educational and portfolio purposes only.
