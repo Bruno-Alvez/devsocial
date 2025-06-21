@@ -5,11 +5,5 @@ export function getAvatarUrl(avatarPath?: string | null): string {
     return fallback;
   }
 
-  try {
-    const url = new URL(avatarPath);
-    return url.href;
-  } catch {
-    const baseApi = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:8000';
-    return `${baseApi}${avatarPath}`;
-  }
+  return avatarPath;
 }

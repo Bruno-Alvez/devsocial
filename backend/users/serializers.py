@@ -25,17 +25,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    avatar = serializers.SerializerMethodField()
+    avatar = serializers.ImageField()
 
     class Meta:
         model = CustomUser
         fields = ["id", "username", "email", "birth_date", "location", "avatar", "bio", "is_private"]
         read_only_fields = ["id", "username", "email"]
-
-    def get_avatar(self, obj):
-        if obj.avatar and hasattr(obj.avatar, 'url'):
-            return obj.avatar.url
-        return None
 
 
 class FollowingSerializer(serializers.ModelSerializer):

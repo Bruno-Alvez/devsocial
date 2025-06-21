@@ -80,7 +80,7 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         if self.request.user != serializer.instance.author:
             raise PermissionDenied("Você não tem permissão pra editar essa publicação!")
-        serializer.save()
+        serializer.save(avatar=self.requests.data.get("avatar"))
 
 
 class PostDeleteView(generics.DestroyAPIView):

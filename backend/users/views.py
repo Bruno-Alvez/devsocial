@@ -51,8 +51,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
     def perform_update(self, serializer):
-        # Isso garante que o campo avatar (e qualquer outro) será salvo
-        serializer.save()
+        serializer.save(avatar=self.request.data.get("avatar"))
 
 
 class PublicProfileView(RetrieveAPIView):

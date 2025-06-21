@@ -1,5 +1,4 @@
 import * as S from './styles';
-
 import {
   FiEdit, FiCheck, FiTrash2, FiX
 } from 'react-icons/fi';
@@ -53,7 +52,7 @@ export default function ProfilePage() {
   const handleSaveField = async (field: string, value: string) => {
     if (!token || !profile) return;
 
-    let formattedValue = value;
+    const formData = new FormData();
 
     if (field === 'birth_date' && value.includes('/')) {
       const [day, month, year] = value.split('/');
@@ -65,20 +64,23 @@ export default function ProfilePage() {
         setTimeout(() => setSuccessMessage(''), 3000);
         return;
       }
-      formattedValue = `${year}-${month}-${day}`;
+      formData.append(field, `${year}-${month}-${day}`);
+    } else {
+      formData.append(field, value);
     }
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/users/profile/`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ [field]: formattedValue }),
+        body: formData,
       });
+
       if (!res.ok) throw new Error();
       const updated = await res.json();
+
       const updatedWithFormattedDate = {
         ...updated,
         birth_date: updated.birth_date
@@ -97,16 +99,18 @@ export default function ProfilePage() {
 
   const handleAvatarUpload = async () => {
     if (!token || !avatarFile) return;
-    const form = new FormData();
-    form.append('avatar', avatarFile);
+    const formData = new FormData();
+    formData.append('avatar', avatarFile);
+
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/users/profile/`, {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        body: form,
+        body: formData,
       });
+
       if (!res.ok) throw new Error();
       const updated = await res.json();
       updateUser({ ...user, avatar: updated.avatar });
@@ -134,11 +138,12 @@ export default function ProfilePage() {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/users/profile/`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ avatar: null }),
       });
+
       if (!res.ok) throw new Error();
       updateUser({ avatar: null });
       setProfile({ ...profile, avatar: null } as ProfileData);

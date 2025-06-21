@@ -5,7 +5,7 @@ from cloudinary.models import CloudinaryField
 
 class CustomUser(AbstractUser):
     bio = models.TextField(blank=True, null=True)
-    avatar = CloudinaryField('avatar' , blank=True, null=True)
+    avatar = CloudinaryField('image', folder= 'avatars' , blank=True, null=True)
     email = models.EmailField(unique=True)
     birth_date = models.DateField(blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)
@@ -16,7 +16,9 @@ class CustomUser(AbstractUser):
 
 
     def __str__(self):
-        return self.username
+        return str(self.username) if self.username else f"Usuário#{self.pk}"
+
+
 
 class Following(models.Model):
     follower = models.ForeignKey(
