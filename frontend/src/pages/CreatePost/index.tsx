@@ -1,31 +1,23 @@
-import * as S from './styles';
-
-import { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import * as S from './styles'
+import { useState } from 'react'
+import { useAuth } from '../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export default function CreatePost() {
-  const { token } = useAuth();
-  const [content, setContent] = useState('');
-  const [image, setImage] = useState<File | null>(null);
-  const navigate = useNavigate();
+  const { token } = useAuth()
+  const [content, setContent] = useState('')
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
+    if (!token) {
+      alert('Você não está autenticado.')
+      return
+    }
 
-  if (!token) {
-    alert('Você não está autenticado.');
-    return;
-  }
-
-
-
-    const formData = new FormData();
-    formData.append('content', content);
-    if (image) formData.append('image', image);
-
-    
+    const formData = new FormData()
+    formData.append('content', content)
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/`, {
@@ -34,14 +26,14 @@ export default function CreatePost() {
           Authorization: `Bearer ${token}`,
         },
         body: formData,
-      });
+      })
 
-      if (!response.ok) throw new Error('Erro ao criar post');
-      navigate('/my-posts');
+      if (!response.ok) throw new Error('Erro ao criar post')
+      navigate('/my-posts')
     } catch (err) {
-      console.error('Erro ao publicar:', err);
+      console.error('Erro ao publicar:', err)
     }
-  };
+  }
 
   return (
     <S.Container>
@@ -61,40 +53,10 @@ export default function CreatePost() {
               onChange={(e) => setContent(e.target.value)}
             />
 
-            <S.Label htmlFor="image">Adicione uma imagem a publicação (Opcional)</S.Label>
-            <S.FileInputWrapper>
-                <S.HiddenInput
-                    type="file"
-                    id="image"
-                    accept="image/*"
-                    onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) setImage(file);
-                    }}
-                />
-                <S.UploadLabel htmlFor="image">
-                    <img src="/photo.png" alt="Upload" />
-                </S.UploadLabel>
-            </S.FileInputWrapper>
-
-            {image && (
-                <img
-                    src={URL.createObjectURL(image)}
-                    alt="Pré-visualização"
-                    style={{
-                        marginTop: '1rem',
-                        maxWidth: '100%',
-                        borderRadius: '10px',
-                        border: '1px solid #30363d'
-                    }}
-                />
-)}
-
-
             <S.SubmitButton type="submit">Publicar</S.SubmitButton>
           </S.Form>
         </S.Feed>
       </S.FeedWrapper>
     </S.Container>
-  );
+  )
 }

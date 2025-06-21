@@ -14,7 +14,6 @@ export default function HomePage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [newPostContent, setNewPostContent] = useState('');
-  const [newPostImage, setNewPostImage] = useState<File | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
@@ -50,10 +49,10 @@ export default function HomePage() {
   }, [searchQuery, token]);
 
   const handleCreatePost = async () => {
-    if (!newPostContent.trim() && !newPostImage) return;
+    if (!newPostContent.trim()) return;
     const formData = new FormData();
     formData.append('content', newPostContent);
-    if (newPostImage) formData.append('image', newPostImage);
+    
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/posts/`, {
         method: 'POST',
@@ -66,7 +65,6 @@ export default function HomePage() {
       const createdPost = await response.json();
       setPosts([createdPost, ...posts]);
       setNewPostContent('');
-      setNewPostImage(null);
     } catch (err) {
       console.error('Erro ao postar:', err);
     }
@@ -101,13 +99,6 @@ export default function HomePage() {
                 placeholder="No que você está pensando?"
                 value={newPostContent}
                 onChange={(e) => setNewPostContent(e.target.value)}
-              />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setNewPostImage(e.target.files?.[0] || null)}
-                style={{ display: 'none' }}
-                id="upload-img"
               />
               <label htmlFor="upload-img" style={{ marginLeft: '0.5rem', cursor: 'pointer', color: '#2f81f7' }}>📎</label>
               <S.PostButton onClick={handleCreatePost}>Postar</S.PostButton>

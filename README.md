@@ -47,7 +47,7 @@ Built to simulate a real-world application, ready to be showcased in a professio
 
 | Component    | URL                                                |
 |--------------|-----------------------------------------------------|
-| Frontend     | https://devsocial.vercel.app                        |
+| Frontend     | https://devsocial-seven.vercel.app                        |
 | Backend API  | https://devsocial-api.onrender.com                  |
 
 ---

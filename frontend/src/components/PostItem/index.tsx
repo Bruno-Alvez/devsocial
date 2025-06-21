@@ -17,7 +17,6 @@ interface PostItemProps {
   post: {
     id: number
     content: string
-    image?: string | null
     created_at: string
     likes_count: number
     author: {
@@ -32,7 +31,6 @@ interface PostItemProps {
 
 export default function PostItem({ post, showDeleteButton = false, onDelete }: PostItemProps) {
   const { token } = useAuth()
-  const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:8000'
 
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(post.likes_count)
@@ -71,7 +69,7 @@ export default function PostItem({ post, showDeleteButton = false, onDelete }: P
 
   return (
     <S.PostCard>
-      <S.Avatar src={getAvatarUrl(post.author.avatar)} alt="Avatar do autor" crossOrigin='anonymous'/>
+      <S.Avatar src={getAvatarUrl(post.author.avatar)} alt="Avatar do autor" crossOrigin='anonymous' />
       <S.Content>
         <S.Username>@{post.author.username}</S.Username>
         <S.Timestamp>
@@ -84,14 +82,6 @@ export default function PostItem({ post, showDeleteButton = false, onDelete }: P
         </S.Timestamp>
 
         <S.PostText>{post.content}</S.PostText>
-
-        {post.image && (
-          <S.PostImage
-            src={post.image && post.image.startsWith('http') ? post.image : `${apiBase}${post.image || ''}`}
-            alt="Imagem do post"
-            onError={(e) => { e.currentTarget.src = '/fallback-image.png'; }}
-          />
-        )}
 
         <S.LikesCount>{likesCount} curtidas</S.LikesCount>
 
