@@ -165,7 +165,7 @@ export default function ProfilePage() {
     if (!token) return;
     if (!confirm('Tem certeza que deseja excluir sua conta?')) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/me/`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/profile/`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
